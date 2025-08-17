@@ -1,11 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leviathans Hub</title>
+  <title>Leviathans Hub - Earn Money</title>
   <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <style>
@@ -15,6 +15,7 @@
       --accent-color: #4cc9f0;
       --success-color: #4ad66d;
       --danger-color: #f72585;
+      --warning-color: #ff9f1c;
       --light-color: #f8f9fa;
       --dark-color: #212529;
       --gray-color: #6c757d;
@@ -41,22 +42,20 @@
     
     .container {
       width: 90%;
-      max-width: 400px;
-      margin: 30px auto;
+      max-width: 500px;
+      margin: 20px auto;
       background: white;
-      padding: 25px;
+      padding: 20px;
       border-radius: var(--border-radius);
       box-shadow: var(--box-shadow);
       position: relative;
-      border: 1px solid rgba(0,0,0,0.05);
     }
     
     h2 {
       text-align: center;
       color: var(--primary-color);
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       font-weight: 600;
-      font-size: 1.8rem;
     }
     
     h3 {
@@ -73,13 +72,12 @@
     
     input, select {
       width: 100%;
-      padding: 14px;
-      margin: 10px 0;
+      padding: 12px;
+      margin: 8px 0;
       border-radius: var(--border-radius);
       border: 1px solid #e0e0e0;
       font-size: 16px;
       transition: var(--transition);
-      background: var(--light-color);
     }
     
     input:focus, select:focus {
@@ -90,8 +88,8 @@
     
     button {
       width: 100%;
-      padding: 14px;
-      margin: 10px 0;
+      padding: 12px;
+      margin: 8px 0;
       border-radius: var(--border-radius);
       border: none;
       font-size: 16px;
@@ -111,100 +109,135 @@
       transform: translateY(0);
     }
     
+    button.secondary {
+      background: var(--gray-color);
+    }
+    
+    button.success {
+      background: var(--success-color);
+    }
+    
+    button.warning {
+      background: var(--warning-color);
+    }
+    
     .hidden {
       display: none;
     }
     
-    .dashboard {
-      text-align: center;
-    }
-    
-    .stats {
+    .stats-card {
       background: linear-gradient(135deg, #f5f7ff 0%, #e8ecff 100%);
-      padding: 20px;
-      border-radius: var(--border-radius);
-      margin: 15px 0;
-      border: 1px solid rgba(67, 97, 238, 0.1);
-    }
-    
-    .stats p {
-      margin: 8px 0;
-      font-size: 16px;
-      display: flex;
-      justify-content: space-between;
-    }
-    
-    .stats p b {
-      color: var(--gray-color);
-      font-weight: 500;
-    }
-    
-    .ads {
-      margin-top: 25px;
-      padding: 20px;
-      background: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-    }
-    
-    #viewAdBtn {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-      margin-bottom: 15px;
-    }
-    
-    #viewAdBtn:hover {
-      background: linear-gradient(135deg, var(--secondary-color) 0%, #3aa8d8 100%);
-    }
-    
-    #viewAdBtn:disabled {
-      background: var(--gray-color);
-      transform: none;
-      cursor: not-allowed;
-    }
-    
-    .withdraw-form {
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      padding: 20px;
-      border-radius: var(--border-radius);
-      margin-top: 20px;
-      border: 1px solid rgba(0,0,0,0.05);
-    }
-    
-    .withdraw-history {
-      margin-top: 25px;
-      text-align: left;
-    }
-    
-    .withdraw-item {
-      background: white;
       padding: 15px;
       border-radius: var(--border-radius);
       margin: 10px 0;
-      box-shadow: var(--box-shadow);
-      font-size: 14px;
-      border-left: 4px solid var(--primary-color);
+      text-align: center;
+      border: 1px solid rgba(67, 97, 238, 0.1);
     }
     
-    .ad-progress {
-      height: 8px;
-      background: #e0e0e0;
-      border-radius: 10px;
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .stat-item {
+      background: white;
+      padding: 10px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+    
+    .progress-container {
       margin: 15px 0;
+    }
+    
+    .progress-bar {
+      height: 10px;
+      background: #e0e0e0;
+      border-radius: 5px;
       overflow: hidden;
     }
     
-    .ad-progress-bar {
+    .progress-fill {
       height: 100%;
       background: linear-gradient(90deg, var(--success-color) 0%, #2ecc71 100%);
-      border-radius: 10px;
+      border-radius: 5px;
       width: 0%;
-      transition: width 1s linear;
+      transition: width 0.5s ease;
     }
     
-    #cooldownText {
-      font-size: 14px;
+    .referral-link {
+      background: white;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      margin: 15px 0;
+      border: 1px dashed var(--primary-color);
+      word-break: break-all;
+      text-align: center;
+    }
+    
+    .referral-list {
+      margin-top: 15px;
+    }
+    
+    .referral-item, .withdraw-item {
+      background: white;
+      padding: 12px;
+      border-radius: var(--border-radius);
+      margin: 8px 0;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .footer-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       color: var(--gray-color);
-      margin-top: 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    
+    .footer-btn.active {
+      color: var(--primary-color);
+    }
+    
+    .footer-btn i {
+      font-size: 20px;
+      margin-bottom: 3px;
+    }
+    
+    .alert {
+      padding: 10px;
+      border-radius: var(--border-radius);
+      margin: 10px 0;
+      text-align: center;
+    }
+    
+    .alert-warning {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
     }
     
     /* Navigation elements */
@@ -311,18 +344,15 @@
     @media (max-width: 480px) {
       .container {
         width: 95%;
-        padding: 20px 15px;
+        padding: 15px;
+        margin-bottom: 70px;
       }
       
       h2 {
         font-size: 1.5rem;
       }
-      
-      input, button, select {
-        padding: 12px;
-      }
     }
-</style>
+  </style>
 </head>
 <body>
   <!-- Hamburger icon (visible on dashboard) -->
@@ -349,372 +379,681 @@
     </div>
   </div>
 
-  <!-- Register -->
+  <!-- Register Page -->
   <div id="registerPage" class="container">
-    <h2>Register</h2>
-    <input type="text" id="regUsername" placeholder="Username">
+    <h2>Create Account</h2>
+    <div id="referralFieldContainer" class="hidden">
+      <label>Referral Code</label>
+      <input type="text" id="referralCode" placeholder="Enter referral code" readonly>
+    </div>
+    <input type="text" id="regUsername" placeholder="Your Name">
     <input type="text" id="regPhone" placeholder="Phone Number">
     <input type="password" id="regPassword" placeholder="Password">
     <button onclick="register()">Register</button>
-    <p>Already have account? <a href="#" onclick="showLogin()">Login</a></p>
+    <p style="text-align: center; margin-top: 10px;">Already have account? <a href="#" onclick="showLogin()">Login</a></p>
   </div>
 
-  <!-- Login -->
+  <!-- Login Page -->
   <div id="loginPage" class="container hidden">
     <h2>Login</h2>
     <input type="text" id="loginPhone" placeholder="Phone Number">
     <input type="password" id="loginPassword" placeholder="Password">
     <button onclick="login()">Login</button>
+    <p style="text-align: center; margin-top: 10px;">Don't have account? <a href="#" onclick="showRegister()">Register</a></p>
   </div>
 
-  <!-- Dashboard -->
+  <!-- Dashboard Pages -->
   <div id="dashboardPage" class="container hidden">
-    <h2>Welcome to Leviathans Hub</h2>
-    <div class="dashboard">
-      <div class="stats">
-        <p><b>Today's Earnings:</b> <span id="todayEarnings">0</span></p>
-        <p><b>Total Earnings:</b> <span id="totalEarnings">0</span></p>
+    <!-- Watch Ads Page -->
+    <div id="watchAdPage">
+      <h2>Watch Ads & Earn</h2>
+      <div id="registrationAlert" class="alert alert-warning hidden">
+        <p>Complete 100 user registrations to unlock ads. <span id="registeredCount">0</span>/100 registered</p>
       </div>
-      <button onclick="showWithdrawOptions()">Withdraw Earnings</button>
-      <div class="ads">
-        <button id="viewAdBtn" onclick="viewAd()">Watch Ad Now</button>
-        <p>Ads watched today: <span id="adsWatched">0</span>/<span id="dailyLimit">100</span></p>
-        <div class="ad-progress">
-          <div class="ad-progress-bar" id="adProgressBar"></div>
+      <div id="adSection" class="hidden">
+        <div class="stats-card">
+          <h3>Today's Earnings</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <small>Ads Watched</small>
+              <p><span id="adsWatched">0</span>/<span id="dailyLimit">10</span></p>
+            </div>
+            <div class="stat-item">
+              <small>Earnings</small>
+              <p>Rs <span id="todayEarnings">0</span></p>
+            </div>
+          </div>
         </div>
-        <p id="cooldownText" style="display:none;">Please wait <span id="cooldownTimer">10</span> seconds</p>
+        <button id="viewAdBtn" onclick="viewAd()">Watch Ad (Rs 0.50)</button>
+        <div class="progress-container">
+          <p>Ad Progress</p>
+          <div class="progress-bar">
+            <div class="progress-fill" id="adProgressBar"></div>
+          </div>
+          <p id="cooldownText" class="hidden">Please wait <span id="cooldownTimer">10</span> seconds</p>
+        </div>
       </div>
-      <div id="withdrawSection" class="withdraw-form hidden">
-        <select id="withdrawMethod">
-          <option value="jazzcash">JazzCash</option>
-          <option value="easypaisa">EasyPaisa</option>
-        </select>
-        <input type="text" id="holderName" placeholder="Account Holder Name">
-        <input type="text" id="accountNumber" placeholder="Account Number">
-        <button onclick="submitWithdraw()">Submit Withdraw</button>
+    </div>
+
+    <!-- Withdraw Page -->
+    <div id="withdrawPage" class="hidden">
+      <h2>Withdraw Earnings</h2>
+      <div class="stats-card">
+        <h3>Your Balance</h3>
+        <p style="font-size: 24px; font-weight: bold;">Rs <span id="totalEarnings">0</span></p>
+        <small>Total earnings from ads and referrals</small>
       </div>
-      <div id="withdrawHistory" class="withdraw-history"></div>
+      <select id="withdrawMethod">
+        <option value="">Select Payment Method</option>
+        <option value="jazzcash">JazzCash</option>
+        <option value="easypaisa">EasyPaisa</option>
+      </select>
+      <input type="text" id="holderName" placeholder="Account Holder Name">
+      <input type="text" id="accountNumber" placeholder="Account Number">
+      <input type="number" id="withdrawAmount" placeholder="Withdraw Amount (Minimum Rs 100)">
+      <button class="success" onclick="submitWithdraw()">Request Withdrawal</button>
+      
+      <div id="withdrawHistory">
+        <h3 style="margin-top: 20px;">Withdrawal History</h3>
+        <div id="withdrawList"></div>
+      </div>
+    </div>
+
+    <!-- Referral Page -->
+    <div id="referralPage" class="hidden">
+      <h2>Refer & Earn</h2>
+      <div class="stats-card">
+        <h3>Your Referral Stats</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <small>Total Referrals</small>
+            <p><span id="totalReferrals">0</span></p>
+          </div>
+          <div class="stat-item">
+            <small>Earned</small>
+            <p>Rs <span id="referralEarnings">0</span></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="alert alert-info">
+        <p>Earn Rs 5 for each referral when they watch 100 ads</p>
+      </div>
+      
+      <div class="referral-link">
+        <p>Your Referral Link:</p>
+        <p id="userReferralLink">https://leviathanshub.com/?ref=</p>
+        <button onclick="copyReferralLink()">Copy Link</button>
+      </div>
+      
+      <div class="referral-list">
+        <h3>Your Referrals</h3>
+        <div id="referralsList"></div>
+      </div>
     </div>
   </div>
 
-  <script>
-    // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
-                    });
-            });
-        }
-
-        // Install Prompt
-        let deferredPrompt;
-        const installBtn = document.createElement('button');
-        installBtn.id = 'installBtn';
-        installBtn.className = 'install-btn';
-        installBtn.textContent = 'Install App';
-        installBtn.style.display = 'none';
-        document.body.appendChild(installBtn);
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'block';
-            
-            installBtn.addEventListener('click', () => {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    } else {
-                        console.log('User dismissed the install prompt');
-                    }
-                    deferredPrompt = null;
-                    installBtn.style.display = 'none';
-                });
-            });
-        });
-
-        window.addEventListener('appinstalled', () => {
-            installBtn.style.display = 'none';
-            console.log('PWA was installed');
-        });
-
-        window.addEventListener('load', () => {
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                installBtn.style.display = 'none';
-            }
-        });
-    // Firebase config
-    const firebaseConfig = {  
-      apiKey: "AIzaSyB3uXd_gn5WuL0t0gv0Qyt_c7iIgeXV9mc",  
-      authDomain: "hati-4707b.firebaseapp.com",  
-      projectId: "hati-4707b",  
-      databaseURL: "https://hati-4707b-default-rtdb.firebaseio.com/",  
-      storageBucket: "hati-4707b.appspot.com",  
-      messagingSenderId: "209757591816",  
-      appId: "1:209757591816:web:c0f06a5829143f75d074bd"  
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    let currentUser = null;
-    let adCooldown = false;
-    let cooldownInterval;
-    let timeLeft = 10;
-
-    // Hamburger menu toggle
-    document.getElementById('hamburgerMenu').addEventListener('click', function() {
-      document.getElementById('adminPanel').classList.toggle('active');
-      document.getElementById('adminOverlay').classList.toggle('active');
-    });
-    
-    // Close admin panel when clicking overlay
-    document.getElementById('adminOverlay').addEventListener('click', function() {
-      document.getElementById('adminPanel').classList.remove('active');
-      document.getElementById('adminOverlay').classList.remove('active');
-    });
-
-    function showLogin(){
-      document.getElementById('registerPage').classList.add('hidden');
-      document.getElementById('loginPage').classList.remove('hidden');
-    }
-
-    function showRegister(){
-      document.getElementById('loginPage').classList.add('hidden');
-      document.getElementById('registerPage').classList.remove('hidden');
-    }
-
-    function register(){
-      let username = document.getElementById('regUsername').value;
-      let phone = document.getElementById('regPhone').value;
-      let pass = document.getElementById('regPassword').value;
-      if(!username || !phone || !pass) return alert("Fill all fields");
-      db.ref('users/'+phone).set({username,phone,password:pass,total:0,today:0,adsWatched:0,dailyLimit:100,withdraws:{}});
-      alert("Registered successfully");
-      showLogin();
-    }
-
-    function login(){
-      let phone = document.getElementById('loginPhone').value;
-      let pass = document.getElementById('loginPassword').value;
-      db.ref('users/'+phone).once('value').then(snap=>{
-        if(snap.exists() && snap.val().password===pass){
-          currentUser = snap.val();
-          currentUser.phone = phone;
-          loadDashboard();
-        } else alert("Invalid login");
+  <!-- Footer Navigation -->
+  <div class="footer hidden" id="mainFooter">
+    <div class="footer-btn active" onclick="showPage('watchAdPage')">
+      <i class="fas fa-ad"></i>
+      <span>Watch Ads</span>
+    </div>
+    <div class="footer-btn" onclick="showPage('withdrawPage')">
+      <i class="fas fa-wallet"></i>
+      <span>Withdraw</span>
+    </div>
+    <div class="footer-btn" onclick="showPage('referralPage')">
+      <i class="fas fa-users"></i>
+      <span>Referrals</span>
+    </div>
+  </div>
+  <script>// Fi
+  // / Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful');
+      })
+      .catch(err => {
+        console.log('ServiceWorker registration failed: ', err);
       });
-    }
+  });
+}
 
-    function logout() {
-      currentUser = null;
-      document.getElementById('dashboardPage').classList.add('hidden');
-      document.getElementById('hamburgerMenu').classList.add('hidden');
-      document.getElementById('logoutBtn').classList.add('hidden');
-      document.getElementById('adminPanel').classList.remove('active');
-      document.getElementById('adminOverlay').classList.remove('active');
-      document.getElementById('adminContent').classList.add('hidden');
-      document.getElementById('loginPage').classList.remove('hidden');
-    }
+// Install Prompt
+let deferredPrompt;
+const installBtn = document.createElement('button');
+installBtn.id = 'installBtn';
+installBtn.className = 'install-btn';
+installBtn.textContent = 'Install App';
+installBtn.style.display = 'none';
+document.body.appendChild(installBtn);
 
-    function loadDashboard(){
-      document.getElementById('loginPage').classList.add('hidden');
-      document.getElementById('registerPage').classList.add('hidden');
-      document.getElementById('dashboardPage').classList.remove('hidden');
-      document.getElementById('hamburgerMenu').classList.remove('hidden');
-      document.getElementById('logoutBtn').classList.remove('hidden');
-      updateUI();
-    }
-
-    function updateUI(){
-      db.ref('users/'+currentUser.phone).on('value', snap=>{
-        currentUser = snap.val();
-        document.getElementById('todayEarnings').innerText = currentUser.today || 0;
-        document.getElementById('totalEarnings').innerText = currentUser.total || 0;
-        document.getElementById('adsWatched').innerText = currentUser.adsWatched || 0;
-        document.getElementById('dailyLimit').innerText = currentUser.dailyLimit || 100;
-        loadWithdrawHistory();
-      });
-    }
-
-    function viewAd(){
-      if(currentUser.adsWatched >= currentUser.dailyLimit) return alert("Daily ad limit reached");
-      if(adCooldown) return alert("Wait "+timeLeft+" seconds before next ad");
-      
-      // Open ad in new tab automatically
-      let adWindow = window.open("https://otieu.com/4/9712101", "_blank");
-      
-      // If popup blocked, show alert
-      if(!adWindow || adWindow.closed || typeof adWindow.closed=='undefined') {
-        alert("Please allow popups to watch ads");
-        return;
-      }
-      
-      adCooldown = true;
-      timeLeft = 10;
-      document.getElementById('viewAdBtn').disabled = true;
-      document.getElementById('cooldownText').style.display = 'block';
-      document.getElementById('cooldownTimer').innerText = timeLeft;
-      
-      cooldownInterval = setInterval(()=>{
-        timeLeft--;
-        document.getElementById('cooldownTimer').innerText = timeLeft;
-        document.getElementById('adProgressBar').style.width = (100 - (timeLeft/10*100)) + '%';
-        
-        if(timeLeft <= 0){
-          clearInterval(cooldownInterval);
-          adCooldown = false;
-          db.ref('users/'+currentUser.phone).update({
-            adsWatched: (currentUser.adsWatched||0)+1,
-            today: (currentUser.today||0)+0.055,
-                        total: (currentUser.total||0)+0.055,
-          });
-          document.getElementById('viewAdBtn').disabled = false;
-          document.getElementById('cooldownText').style.display = 'none';
-          document.getElementById('adProgressBar').style.width = '0%';
-        }
-      }, 1000);
-    }
-
-    function showWithdrawOptions(){
-      document.getElementById('withdrawSection').classList.toggle('hidden');
-    }
-
-    function submitWithdraw(){
-      let method = document.getElementById('withdrawMethod').value;
-      let holder = document.getElementById('holderName').value;
-      let acc = document.getElementById('accountNumber').value;
-      if(!holder || !acc) return alert("Fill fields");
-      let id = Date.now();
-      db.ref('users/'+currentUser.phone+'/withdraws/'+id).set({method,holder,acc,status:'pending',message:''});
-      alert("Withdraw request sent");
-    }
-
-    function loadWithdrawHistory(){
-      let historyBox = document.getElementById('withdrawHistory');
-      historyBox.innerHTML = "<h3>Withdraw History</h3>";
-      if(currentUser.withdraws){
-        Object.keys(currentUser.withdraws).forEach(id=>{
-          let w = currentUser.withdraws[id];
-          historyBox.innerHTML += `<div class='withdraw-item'>${w.method} - ${w.holder} - ${w.acc} - ${w.status} (${w.message})</div>`;
-        });
-      }
-    }
-    
-    // Admin functions
-    function unlockAdmin() {
-      const password = document.getElementById('adminPassword').value;
-      if(password === "happy") {
-        document.getElementById('adminContent').classList.remove('hidden');
-        loadAdminData();
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'block';
+  
+  installBtn.addEventListener('click', () => {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
       } else {
-        alert("Incorrect admin password");
+        console.log('User dismissed the install prompt');
       }
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+  });
+});
+
+window.addEventListener('appinstalled', () => {
+  installBtn.style.display = 'none';
+  console.log('PWA was installed');
+});
+
+window.addEventListener('load', () => {
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    installBtn.style.display = 'none';
+  }
+});
+const firebaseConfig = {  
+  apiKey: "AIzaSyB3uXd_gn5WuL0t0gv0Qyt_c7iIgeXV9mc",  
+  authDomain: "hati-4707b.firebaseapp.com",  
+  projectId: "hati-4707b",  
+  databaseURL: "https://hati-4707b-default-rtdb.firebaseio.com/",  
+  storageBucket: "hati-4707b.appspot.com",  
+  messagingSenderId: "209757591816",  
+  appId: "1:209757591816:web:c0f06a5829143f75d074bd"  
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Global variables
+let currentUser = null;
+let adCooldown = false;
+let cooldownInterval;
+let timeLeft = 10;
+let currentPage = 'watchAdPage';
+
+
+
+// Check for referral code in URL when page loads
+window.onload = function() {
+  checkReferral();
+  checkUserRegistrationCount();
+};
+
+// Check if URL has referral parameter
+function checkReferral() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref');
+  
+  if (refCode) {
+    document.getElementById('referralFieldContainer').classList.remove('hidden');
+    document.getElementById('referralCode').value = refCode;
+  }
+}
+
+// Check total user registrations
+function checkUserRegistrationCount() {
+  db.ref('users').once('value').then(snap => {
+    const totalUsers = snap.numChildren();
+    if (totalUsers < 100) {
+      document.getElementById('registrationAlert').classList.remove('hidden');
+      document.getElementById('registeredCount').textContent = totalUsers;
+      document.getElementById('adSection').classList.add('hidden');
+    } else {
+      document.getElementById('registrationAlert').classList.add('hidden');
+      document.getElementById('adSection').classList.remove('hidden');
     }
-    
-    function loadAdminData() {
-      // Load users list
-      db.ref('users').on('value', snap => {
-        const usersList = document.getElementById('usersList');
-        usersList.innerHTML = '';
-        
-        snap.forEach(user => {
-          const userData = user.val();
-          usersList.innerHTML += `
-            <div style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
-              <strong>${userData.username || 'No name'}</strong> (${userData.phone})<br>
-              Ads: ${userData.adsWatched || 0}/${userData.dailyLimit || 100}<br>
-              Balance: Rs ${userData.today || 0}<br>
-              Total: Rs ${userData.total || 0}
-              <div class="admin-controls">
-                <button onclick="changeUserLimit('${userData.phone}', 1)">+ Limit</button>
-                <button onclick="changeUserLimit('${userData.phone}', -1)">- Limit</button>
-                <button onclick="resetUserAds('${userData.phone}')" style="background: #ff9800;">Reset Ads</button>
-              </div>
-            </div>
-          `;
-        });
-      });
+  });
+}
+
+// Hamburger menu toggle
+document.getElementById('hamburgerMenu')?.addEventListener('click', function() {
+  document.getElementById('adminPanel').classList.toggle('active');
+  document.getElementById('adminOverlay').classList.toggle('active');
+});
+
+// Close admin panel when clicking overlay
+document.getElementById('adminOverlay')?.addEventListener('click', function() {
+  document.getElementById('adminPanel').classList.remove('active');
+  document.getElementById('adminOverlay').classList.remove('active');
+});
+
+function showLogin(){
+  document.getElementById('registerPage').classList.add('hidden');
+  document.getElementById('loginPage').classList.remove('hidden');
+}
+
+function showRegister(){
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('registerPage').classList.remove('hidden');
+}
+
+function register(){
+  const username = document.getElementById('regUsername').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const password = document.getElementById('regPassword').value.trim();
+  const referralCode = document.getElementById('referralCode')?.value.trim();
+  
+  if(!username || !phone || !password) return alert("Fill all fields");
+  
+  // Check if user already exists
+  db.ref('users/' + phone).once('value').then(snap => {
+    if (snap.exists()) {
+      alert("This phone number is already registered");
+    } else {
+      // Generate referral code for new user (first 4 of phone + first 4 of name)
+      const userRefCode = (phone.slice(0,4) + username.replace(/\s/g,'').slice(0,4)).toLowerCase();
       
-      // Load withdraw requests
-      db.ref('users').on('value', snap => {
-        const withdrawRequests = document.getElementById('withdrawRequests');
-        withdrawRequests.innerHTML = '';
-        
-        snap.forEach(user => {
-          const userData = user.val();
-          if(userData.withdraws) {
-            Object.keys(userData.withdraws).forEach(id => {
-              const withdraw = userData.withdraws[id];
-              if(withdraw.status === 'pending') {
-                withdrawRequests.innerHTML += `
-                  <div style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
-                    <strong>${userData.username}</strong> (${userData.phone})<br>
-                    Method: ${withdraw.method}<br>
-                    Account: ${withdraw.holder} - ${withdraw.acc}<br>
-                    Amount: Rs ${withdraw.amount || 0}<br>
-                    <input type="text" id="adminMsg${id}" placeholder="Message"><br>
-                    <button onclick="approveWithdraw('${userData.phone}', '${id}')" style="background: #4CAF50; margin-top: 5px;">Approve</button>
-                    <button onclick="rejectWithdraw('${userData.phone}', '${id}')" style="background: #f44336; margin-top: 5px;">Reject</button>
-                  </div>
-                `;
+      // Create user object
+      const userData = {
+        username,
+        phone,
+        password,
+        referralCode: userRefCode,
+        referredBy: referralCode || null,
+        referrals: {},
+        totalEarnings: 0,
+        todayEarnings: 0,
+        totalReferralEarnings: 0,
+        adsWatched: 0,
+        dailyLimit: 100,
+        withdraws: {},
+        createdAt: Date.now()
+      };
+      
+      // Save user to database
+      db.ref('users/' + phone).set(userData)
+        .then(() => {
+          // If registered with referral code, update referrer's data
+          if (referralCode) {
+            findUserByReferralCode(referralCode).then(referrerPhone => {
+              if (referrerPhone) {
+                db.ref('users/' + referrerPhone + '/referrals/' + phone).set({
+                  username,
+                  phone,
+                  adsWatched: 0,
+                  earnings: 0,
+                  joinedAt: Date.now()
+                });
+              }
+            });
+          }
+          
+          alert("Registered successfully");
+          showLogin();
+          checkUserRegistrationCount();
+        });
+    }
+  });
+}
+
+// Find user by referral code
+function findUserByReferralCode(refCode) {
+  return db.ref('users').orderByChild('referralCode').equalTo(refCode).once('value')
+    .then(snap => {
+      if (snap.exists()) {
+        const userData = snap.val();
+        const phone = Object.keys(userData)[0];
+        return phone;
+      }
+      return null;
+    });
+}
+
+function login(){
+  let phone = document.getElementById('loginPhone').value;
+  let pass = document.getElementById('loginPassword').value;
+  db.ref('users/'+phone).once('value').then(snap=>{
+    if(snap.exists() && snap.val().password===pass){
+      currentUser = snap.val();
+      currentUser.phone = phone;
+      loadDashboard();
+    } else alert("Invalid login");
+  });
+}
+
+function logout() {
+  currentUser = null;
+  document.getElementById('dashboardPage').classList.add('hidden');
+  document.getElementById('hamburgerMenu').classList.add('hidden');
+  document.getElementById('logoutBtn').classList.add('hidden');
+  document.getElementById('adminPanel').classList.remove('active');
+  document.getElementById('adminOverlay').classList.remove('active');
+  document.getElementById('adminContent').classList.add('hidden');
+  document.getElementById('loginPage').classList.remove('hidden');
+}
+
+function loadDashboard(){
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('registerPage').classList.add('hidden');
+  document.getElementById('dashboardPage').classList.remove('hidden');
+  document.getElementById('hamburgerMenu').classList.remove('hidden');
+  document.getElementById('logoutBtn').classList.remove('hidden');
+  document.getElementById('mainFooter').classList.remove('hidden');
+  
+  // Set user's referral link
+  document.getElementById('userReferralLink').textContent = 
+    `https://admoney.vercel.app/?ref=${currentUser.referralCode}`;
+  
+  // Load initial page
+  showPage(currentPage);
+  updateUI();
+}
+
+function updateUI(){
+  db.ref('users/'+currentUser.phone).on('value', snap=>{
+    currentUser = snap.val();
+    currentUser.phone = snap.key;
+    
+    // Update watch ads page
+    document.getElementById('adsWatched').textContent = currentUser.adsWatched || 0;
+    document.getElementById('dailyLimit').textContent = currentUser.dailyLimit || 100;
+    document.getElementById('todayEarnings').textContent = (currentUser.todayEarnings || 0).toFixed(2);
+    
+    // Update withdraw page
+    document.getElementById('totalEarnings').textContent = (currentUser.totalEarnings || 0).toFixed(2);
+    loadWithdrawHistory();
+    
+    // Update referral page
+    document.getElementById('totalReferrals').textContent = currentUser.referrals ? Object.keys(currentUser.referrals).length : 0;
+    document.getElementById('referralEarnings').textContent = (currentUser.totalReferralEarnings || 0).toFixed(2);
+    loadReferralsList();
+    
+    // Check if user can watch ads
+    checkUserRegistrationCount();
+  });
+}
+
+function viewAd(){
+  if(currentUser.adsWatched >= currentUser.dailyLimit) return alert("Daily ad limit reached");
+  if(adCooldown) return alert("Wait "+timeLeft+" seconds before next ad");
+  
+  // Open ad in new tab automatically
+  let adWindow = window.open("https://otieu.com/4/9712101", "_blank");
+  
+  // If popup blocked, show alert
+  if(!adWindow || adWindow.closed || typeof adWindow.closed=='undefined') {
+    alert("Please allow popups to watch ads");
+    return;
+  }
+  
+  adCooldown = true;
+  timeLeft = 10;
+  document.getElementById('viewAdBtn').disabled = true;
+  document.getElementById('cooldownText').style.display = 'block';
+  document.getElementById('cooldownTimer').innerText = timeLeft;
+  
+  cooldownInterval = setInterval(()=>{
+    timeLeft--;
+    document.getElementById('cooldownTimer').innerText = timeLeft;
+    document.getElementById('adProgressBar').style.width = (100 - (timeLeft/10*100)) + '%';
+    
+    if(timeLeft <= 0){
+      clearInterval(cooldownInterval);
+      adCooldown = false;
+      
+      const earnings = 0.50;
+      const updates = {
+        adsWatched: (currentUser.adsWatched || 0) + 1,
+        todayEarnings: (currentUser.todayEarnings || 0) + earnings,
+        totalEarnings: (currentUser.totalEarnings || 0) + earnings
+      };
+      
+      db.ref('users/' + currentUser.phone).update(updates)
+        .then(() => {
+          // Check if user was referred by someone
+          if (currentUser.referredBy) {
+            findUserByReferralCode(currentUser.referredBy).then(referrerPhone => {
+              if (referrerPhone) {
+                // Update referrer's referral stats
+                db.ref('users/' + referrerPhone + '/referrals/' + currentUser.phone + '/adsWatched')
+                  .set((currentUser.adsWatched || 0) + 1);
+                
+                // Check if referred user has watched 100 ads
+                if ((currentUser.adsWatched || 0) + 1 >= 100) {
+                  const referralBonus = 5;
+                  db.ref('users/' + referrerPhone).update({
+                    totalReferralEarnings: (currentUser.totalReferralEarnings || 0) + referralBonus,
+                    totalEarnings: (currentUser.totalEarnings || 0) + referralBonus
+                  });
+                  
+                  // Update referral earnings in referrer's referral list
+                  db.ref('users/' + referrerPhone + '/referrals/' + currentUser.phone + '/earnings')
+                    .set((currentUser.referrals[currentUser.phone]?.earnings || 0) + referralBonus);
+                }
               }
             });
           }
         });
-      });
+      
+      document.getElementById('viewAdBtn').disabled = false;
+      document.getElementById('cooldownText').style.display = 'none';
+      document.getElementById('adProgressBar').style.width = '0%';
     }
-    
-    function changeUserLimit(phone, change) {
-      db.ref(`users/${phone}`).once('value').then(snap => {
-        const user = snap.val();
-        const newLimit = Math.max(0, (user.dailyLimit || 100) + change);
-        db.ref(`users/${phone}`).update({ dailyLimit: newLimit });
-        alert(`Daily limit updated to ${newLimit} for ${user.username}`);
-      });
+  }, 1000);
+}
+
+function showWithdrawOptions(){
+  document.getElementById('withdrawSection').classList.toggle('hidden');
+}
+
+function submitWithdraw(){
+  let method = document.getElementById('withdrawMethod').value;
+  let holder = document.getElementById('holderName').value;
+  let acc = document.getElementById('accountNumber').value;
+  let amount = parseFloat(document.getElementById('withdrawAmount').value);
+  
+  if(!holder || !acc || !amount) return alert("Fill all fields");
+  if(isNaN(amount) || amount <= 0) return alert("Enter valid amount");
+  if(amount > currentUser.totalEarnings) return alert("Insufficient balance");
+  
+  let id = Date.now();
+  db.ref('users/'+currentUser.phone+'/withdraws/'+id).set({
+    method,
+    holder,
+    acc,
+    amount,
+    status:'pending',
+    message:'',
+    requestedAt: Date.now()
+  });
+  
+  // Deduct from user's balance
+  db.ref('users/'+currentUser.phone).update({
+    totalEarnings: (currentUser.totalEarnings || 0) - amount
+  });
+  
+  alert("Withdraw request sent");
+}
+
+function loadWithdrawHistory(){
+  let historyBox = document.getElementById('withdrawHistory');
+  historyBox.innerHTML = "<h3>Withdraw History</h3>";
+  if(currentUser.withdraws){
+    Object.keys(currentUser.withdraws).forEach(id=>{
+      let w = currentUser.withdraws[id];
+      historyBox.innerHTML += `
+        <div class='withdraw-item'>
+          ${w.method} - ${w.holder} - ${w.acc}<br>
+          Amount: Rs ${w.amount || 0}<br>
+          Status: ${w.status} (${w.message})<br>
+          Date: ${new Date(w.requestedAt).toLocaleDateString()}
+        </div>`;
+    });
+  }
+}
+
+// Show specific page
+function showPage(pageName) {
+  // Hide all pages
+  document.getElementById('watchAdPage').classList.add('hidden');
+  document.getElementById('withdrawPage').classList.add('hidden');
+  document.getElementById('referralPage').classList.add('hidden');
+  
+  // Show selected page
+  document.getElementById(pageName).classList.remove('hidden');
+  currentPage = pageName;
+  
+  // Update footer buttons
+  const footerBtns = document.querySelectorAll('.footer-btn');
+  footerBtns.forEach(btn => btn.classList.remove('active'));
+  footerBtns.forEach(btn => {
+    if (btn.querySelector('span').textContent.toLowerCase() === pageName.replace('Page','').toLowerCase()) {
+      btn.classList.add('active');
     }
+  });
+}
+
+// Load referrals list
+function loadReferralsList() {
+  const referralsList = document.getElementById('referralsList');
+  referralsList.innerHTML = '';
+  
+  if (currentUser.referrals) {
+    Object.keys(currentUser.referrals).forEach(phone => {
+      const referral = currentUser.referrals[phone];
+      const item = document.createElement('div');
+      item.className = 'referral-item';
+      item.innerHTML = `
+        <div>
+          <strong>${referral.username}</strong><br>
+          <small>${phone}</small>
+        </div>
+        <div style="text-align: right;">
+          <span>${referral.adsWatched || 0}/100 ads</span><br>
+          <small>Rs ${referral.earnings || 0} earned</small>
+        </div>
+      `;
+      referralsList.appendChild(item);
+    });
+  }
+}
+
+// Copy referral link to clipboard
+function copyReferralLink() {
+  const link = document.getElementById('userReferralLink').textContent;
+  navigator.clipboard.writeText(link)
+    .then(() => {
+      alert("Referral link copied to clipboard!");
+    })
+    .catch(err => {
+      alert("Failed to copy link: " + err);
+    });
+}
+
+// Admin functions
+function unlockAdmin() {
+  const password = document.getElementById('adminPassword').value;
+  if(password === "happy") {
+    document.getElementById('adminContent').classList.remove('hidden');
+    loadAdminData();
+  } else {
+    alert("Incorrect admin password");
+  }
+}
+
+function loadAdminData() {
+  // Load users list
+  db.ref('users').on('value', snap => {
+    const usersList = document.getElementById('usersList');
+    usersList.innerHTML = '';
     
-    function resetUserAds(phone) {
-      if(confirm("Reset this user's ad count?")) {
-        db.ref(`users/${phone}`).update({
-          adsWatched: 0
+    snap.forEach(user => {
+      const userData = user.val();
+      usersList.innerHTML += `
+        <div style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+          <strong>${userData.username || 'No name'}</strong> (${userData.phone})<br>
+          Ads: ${userData.adsWatched || 0}/${userData.dailyLimit || 100}<br>
+          Balance: Rs ${userData.todayEarnings || 0}<br>
+          Total: Rs ${userData.totalEarnings || 0}
+          <div class="admin-controls">
+            <button onclick="changeUserLimit('${userData.phone}', 1)">+ Limit</button>
+            <button onclick="changeUserLimit('${userData.phone}', -1)">- Limit</button>
+            <button onclick="resetUserAds('${userData.phone}')" style="background: #ff9800;">Reset Ads</button>
+          </div>
+        </div>
+      `;
+    });
+  });
+  
+  // Load withdraw requests
+  db.ref('users').on('value', snap => {
+    const withdrawRequests = document.getElementById('withdrawRequests');
+    withdrawRequests.innerHTML = '';
+    
+    snap.forEach(user => {
+      const userData = user.val();
+      if(userData.withdraws) {
+        Object.keys(userData.withdraws).forEach(id => {
+          const withdraw = userData.withdraws[id];
+          if(withdraw.status === 'pending') {
+            withdrawRequests.innerHTML += `
+              <div style="margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                <strong>${userData.username}</strong> (${userData.phone})<br>
+                Method: ${withdraw.method}<br>
+                Account: ${withdraw.holder} - ${withdraw.acc}<br>
+                Amount: Rs ${withdraw.amount || 0}<br>
+                <input type="text" id="adminMsg${id}" placeholder="Message"><br>
+                <button onclick="approveWithdraw('${userData.phone}', '${id}')" style="background: #4CAF50; margin-top: 5px;">Approve</button>
+                <button onclick="rejectWithdraw('${userData.phone}', '${id}')" style="background: #f44336; margin-top: 5px;">Reject</button>
+              </div>
+            `;
+          }
         });
-        alert("Ad count reset");
       }
-    }
-    
-    function approveWithdraw(phone, id) {
-      const message = document.getElementById(`adminMsg${id}`).value || 'Approved';
-      db.ref(`users/${phone}/withdraws/${id}`).update({
-        status: 'approved',
-        message: message
-      });
-      alert("Withdrawal approved");
-    }
-    
-    function rejectWithdraw(phone, id) {
-      const message = document.getElementById(`adminMsg${id}`).value || 'Rejected';
-      db.ref(`users/${phone}/withdraws/${id}`).update({
-        status: 'rejected',
-        message: message
-      });
-      
-      // Return the amount to user's balance
-      db.ref(`users/${phone}`).once('value').then(snap => {
-        const user = snap.val();
-        const withdrawAmount = user.withdraws[id].amount || 0;
-        db.ref(`users/${phone}`).update({
-          today: (user.today || 0) + withdrawAmount
-        });
-      });
-      
-      alert("Withdrawal rejected");
-    }
-  </script>
-</body>
-</html>
+    });
+  });
+}
+
+function changeUserLimit(phone, change) {
+  db.ref(`users/${phone}`).once('value').then(snap => {
+    const user = snap.val();
+    const newLimit = Math.max(0, (user.dailyLimit || 100) + change);
+    db.ref(`users/${phone}`).update({ dailyLimit: newLimit });
+    alert(`Daily limit updated to ${newLimit} for ${user.username}`);
+  });
+}
+
+function resetUserAds(phone) {
+  if(confirm("Reset this user's ad count?")) {
+    db.ref(`users/${phone}`).update({
+      adsWatched: 0
+    });
+    alert("Ad count reset");
+  }
+}
+
+function approveWithdraw(phone, id) {
+  const message = document.getElementById(`adminMsg${id}`).value || 'Approved';
+  db.ref(`users/${phone}/withdraws/${id}`).update({
+    status: 'approved',
+    message: message
+  });
+  alert("Withdrawal approved");
+}
+
+function rejectWithdraw(phone, id) {
+  const message = document.getElementById(`adminMsg${id}`).value || 'Rejected';
+  db.ref(`users/${phone}/withdraws/${id}`).update({
+    status: 'rejected',
+    message: message
+  });
+  
+  // Return the amount to user's balance
+  db.ref(`users/${phone}`).once('value').then(snap => {
+    const user = snap.val();
+    const withdrawAmount = user.withdraws[id].amount || 0;
+    db.ref(`users/${phone}`).update({
+      totalEarnings: (user.totalEarnings || 0) + withdrawAmount
+    });
+  });
+  
+  alert("Withdrawal rejected");
+}</script>
